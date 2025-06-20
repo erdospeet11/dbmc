@@ -1,0 +1,10 @@
+Schema:
+id name price quantity
+COLUMN_TYPE_INT COLUMN_TYPE_STRING COLUMN_TYPE_FLOAT COLUMN_TYPE_INT
+4 255 4 4
+0 0 0 0
+Data:
+0 bread 2.99 100
+1 milk 3.99 100
+2 eggs 4.99 100
+3 cheese 5.99 100
