@@ -64,10 +64,11 @@ build_linux() {
     local CFLAGS="-Wall -Wextra -std=c99"
     local LIBS="-lX11"
     local OUTPUT="dbmc"
+    local SOURCES="main.c b_tree.c"
     
-    print_info "Compiling with: gcc $CFLAGS main.c -o $OUTPUT $LIBS"
+    print_info "Compiling with: gcc $CFLAGS $SOURCES -o $OUTPUT $LIBS"
     
-    gcc $CFLAGS main.c -o $OUTPUT $LIBS
+    gcc $CFLAGS $SOURCES -o $OUTPUT $LIBS
     
     if [[ $? -eq 0 ]]; then
         print_success "Build completed successfully!"
@@ -85,10 +86,11 @@ build_windows() {
     local CFLAGS="-Wall -Wextra -std=c99"
     local LIBS="-lcomctl32 -lgdi32 -luser32"
     local OUTPUT="dbmc.exe"
+    local SOURCES="main.c b_tree.c"
     
-    print_info "Compiling with: gcc $CFLAGS main.c -o $OUTPUT $LIBS"
+    print_info "Compiling with: gcc $CFLAGS $SOURCES -o $OUTPUT $LIBS"
     
-    gcc $CFLAGS main.c -o $OUTPUT $LIBS
+    gcc $CFLAGS $SOURCES -o $OUTPUT $LIBS
     
     if [[ $? -eq 0 ]]; then
         print_success "Build completed successfully!"
@@ -101,9 +103,29 @@ build_windows() {
 
 
 
+build_btree_test() {
+    print_info "Building B-tree test..."
+    
+    local CFLAGS="-Wall -Wextra -std=c99"
+    local SOURCES="b_tree_test.c b_tree.c"
+    local OUTPUT="btree_test"
+    
+    print_info "Compiling with: gcc $CFLAGS $SOURCES -o $OUTPUT"
+    
+    gcc $CFLAGS $SOURCES -o $OUTPUT
+    
+    if [[ $? -eq 0 ]]; then
+        print_success "B-tree test build completed successfully!"
+        print_info "Executable: ./$OUTPUT"
+    else
+        print_error "B-tree test build failed!"
+        exit 1
+    fi
+}
+
 clean() {
     print_info "Cleaning build artifacts..."
-    rm -f dbmc dbmc.exe *.o *.obj
+    rm -f dbmc dbmc.exe btree_test *.o *.obj
     print_success "Clean completed!"
 }
 
@@ -113,7 +135,8 @@ show_help() {
     echo "Usage: ./build.sh [options]"
     echo ""
     echo "Options:"
-    echo "  build, -b     Build the project (default)"
+    echo "  build, -b     Build the main project (default)"
+    echo "  test, -t      Build B-tree test program"
     echo "  clean, -c     Clean build artifacts"
     echo "  help, -h      Show this help message"
     echo ""
@@ -131,6 +154,11 @@ main() {
             ;;
         help|-h)
             show_help
+            exit 0
+            ;;
+        test|-t)
+            check_dependencies
+            build_btree_test
             exit 0
             ;;
         build|-b|"")
